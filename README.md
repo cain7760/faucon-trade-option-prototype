@@ -1,6 +1,6 @@
-# 数据稽核一期前端
+# 猎盈中后台管理系统
 
-基于 Vue 3、TypeScript、Vite、Element Plus 2.9 和 ECharts 构建的数据稽核一期前端项目。
+基于 Vue 3、TypeScript、Vite、Element Plus 2.9 和 ECharts 构建的猎盈中后台管理系统前端项目。
 
 ## 环境要求
 
