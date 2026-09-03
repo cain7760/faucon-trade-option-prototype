@@ -1488,7 +1488,8 @@ function exportRows() {
   display: flex;
   flex: 0 0 auto;
   flex-wrap: wrap;
-  gap: 18px;
+  row-gap: 16px;
+  column-gap: 18px;
   align-items: end;
   padding: 20px 0 16px;
 }
@@ -1508,7 +1509,7 @@ function exportRows() {
   width: 100%;
   height: 0;
   flex: 0 0 100%;
-  margin-bottom: -18px;
+  margin-bottom: -16px;
 }
 
 .option-lifecycle-filter :deep(.el-input),
