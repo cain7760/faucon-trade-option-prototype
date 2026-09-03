@@ -717,7 +717,7 @@ const detailedColumnGroups: ColumnGroup[] = [
   {
     label: '基础信息',
     options: [
-      { value: 'optionInfo', label: '期权信息', width: 220, fixed: 'left', kind: 'optionInfo' },
+      { value: 'optionInfo', label: '期权信息', width: 220, kind: 'optionInfo' },
       { value: 'tenor', label: '期限', width: 68 },
       {
         value: 'strikeRate',
@@ -1488,14 +1488,14 @@ function exportRows() {
   display: flex;
   flex: 0 0 auto;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 18px;
   align-items: end;
   padding: 20px 0 16px;
 }
 
 .option-lifecycle-filter label {
   display: grid;
-  max-width: calc(20% - 12.8px);
+  max-width: calc(20% - 14.4px);
   min-width: 180px;
   flex: 1 1 180px;
   gap: 7px;
@@ -1508,7 +1508,7 @@ function exportRows() {
   width: 100%;
   height: 0;
   flex: 0 0 100%;
-  margin-bottom: -16px;
+  margin-bottom: -18px;
 }
 
 .option-lifecycle-filter :deep(.el-input),
