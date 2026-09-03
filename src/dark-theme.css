@@ -1,0 +1,557 @@
+/* 深色主题
+ * 基准：交易员客户端(4174)深色中性色（底色 #0d1118 / 文本 #a4b1c3 / 边框 #222b36 / 表面 #171a1e）
+ * 主色：保持品牌蓝 #165dff（与浅色一致，不随主题变色）
+ * 浅色模式完全不受本文件影响。
+ */
+
+html.dark {
+  color-scheme: dark;
+
+  /* ===== 语义 Token（--color-*）===== */
+  --color-primary: #165dff;
+  --color-primary-light: #0e1c3b;
+  --color-primary-border: #3562c9;
+  --color-success: #00b42a;
+  --color-success-light: #0b291b;
+  --color-warning: #f7ba1e;
+  --color-warning-light: #302a19;
+  --color-danger: #f53f3f;
+  --color-danger-light: #30181e;
+  --color-text-primary: #a4b1c3;
+  --color-text-secondary: #9fa7b2;
+  --color-text-tertiary: #8993a0;
+  --color-text-inverse: #ffffff;
+  --color-border: #222b36;
+  --color-border-subtle: #303238;
+  --color-bg-surface: #171a1e;
+  --color-bg-elevated: #1e2023;
+  --color-primary-hover: #3975ff;
+  --color-primary-soft: #16243c;
+  --color-bg-page: #0d1118;
+  --color-border-strong: #303238;
+
+  /* ===== Arco 遗留 token 别名（浅色下未定义，深色下补全）===== */
+  --primary-5: #3975ff;
+  --primary-6: #165dff;
+  --success-6: #00b42a;
+  --warning-6: #f7ba1e;
+  --danger-6: #f53f3f;
+  --color-text-3: #8993a0;
+  --color-border-1: #222b36;
+  --color-fill-1: #1e2023;
+
+  /* ===== Element Plus Token（--el-*）===== */
+  --el-color-primary: #165dff;
+  --el-color-primary-light-3: #1346ba;
+  --el-color-primary-light-5: #12378c;
+  --el-color-primary-light-7: #10285d;
+  --el-color-primary-light-8: #0f2046;
+  --el-color-primary-light-9: #0e192f;
+  --el-color-primary-dark-2: #457dff;
+  --el-color-success: #00b42a;
+  --el-color-warning: #f7ba1e;
+  --el-color-danger: #f53f3f;
+  --el-color-info: #8993a0;
+  --el-text-color-primary: #a4b1c3;
+  --el-text-color-regular: #9fa7b2;
+  --el-text-color-secondary: #8993a0;
+  --el-text-color-placeholder: #546172;
+  --el-text-color-disabled: #465363;
+  --el-border-color: #222b36;
+  --el-border-color-light: #303238;
+  --el-border-color-lighter: #2b3440;
+  --el-border-color-extra-light: #29323d;
+  --el-border-color-dark: #303238;
+  --el-border-color-darker: #222b36;
+  --el-fill-color: #1e2023;
+  --el-fill-color-light: #171a1e;
+  --el-fill-color-lighter: #171a1e;
+  --el-fill-color-extra-light: #12161c;
+  --el-fill-color-blank: #171a1e;
+  --el-fill-color-dark: #222a35;
+  --el-fill-color-darker: #242b35;
+  --el-bg-color: #171a1e;
+  --el-bg-color-page: #0d1118;
+  --el-bg-color-overlay: #1e2023;
+  --el-mask-color: rgba(13, 17, 24, 0.72);
+
+  color: #a4b1c3;
+  background-color: #0d1118;
+}
+
+html.dark body {
+  color: #a4b1c3;
+  background: #0d1118;
+}
+
+/* ===== Element Plus 组件覆盖（对应 element-plus-overrides.css 中的硬编码浅色）===== */
+html.dark .el-input__wrapper,
+html.dark .el-select__wrapper {
+  background: #171a1e;
+  box-shadow: inset 0 0 0 1px #303238 !important;
+}
+
+html.dark .el-input__wrapper:hover,
+html.dark .el-select__wrapper:hover {
+  background: #1e2023;
+  box-shadow: inset 0 0 0 1px #3562c9 !important;
+}
+
+html.dark .el-input.is-focus .el-input__wrapper,
+html.dark .el-select__wrapper.is-focused {
+  background: #1e2023;
+  box-shadow: 0 0 0 1px #165dff !important;
+}
+
+html.dark .el-date-editor.el-input .el-input__wrapper,
+html.dark .el-date-editor.el-range-editor {
+  background: #171a1e;
+}
+
+html.dark .el-date-editor.el-input:hover .el-input__wrapper,
+html.dark .el-date-editor.el-range-editor:hover,
+html.dark .el-date-editor.el-range-editor.is-active {
+  box-shadow: 0 0 0 1px #165dff !important;
+}
+
+html.dark .el-select-dropdown,
+html.dark .el-picker__popper,
+html.dark .el-popper {
+  --el-border-color-light: #222b36;
+}
+
+/* 标签 */
+html.dark .el-tag--primary {
+  --el-tag-bg-color: #0e1c3b;
+  --el-tag-text-color: #7ba2f8;
+}
+
+html.dark .el-tag--success {
+  --el-tag-bg-color: #0b291b;
+  --el-tag-text-color: #42ad80;
+}
+
+html.dark .el-tag--warning {
+  --el-tag-bg-color: #302a19;
+  --el-tag-text-color: #f7ba1e;
+}
+
+html.dark .el-tag--danger {
+  --el-tag-bg-color: #30181e;
+  --el-tag-text-color: #ff6b6b;
+}
+
+html.dark .el-tag--info {
+  --el-tag-bg-color: #1e2023;
+  --el-tag-text-color: #8993a0;
+}
+
+/* 表格 */
+html.dark .el-table {
+  --el-table-border-color: #222b36;
+  --el-table-header-bg-color: #1e2631;
+  --el-table-tr-bg-color: #12161c;
+  --el-table-row-hover-bg-color: #1e2023;
+  --el-table-current-row-bg-color: #10203f;
+  --el-table-striped-bg-color: #171a1e;
+  --el-table-text-color: #a4b1c3;
+  --el-table-header-text-color: #9fa7b2;
+}
+
+/* 固定列（fixed 列横向滚动时盖住内容，需不透明背景对齐行底色；运行时切换主题时 EP 有更高优先级处理，故加 !important） */
+html.dark .el-table__body-wrapper td.el-table-fixed-column--left,
+html.dark .el-table__body-wrapper td.el-table-fixed-column--right,
+html.dark .el-table__body-wrapper td.el-table__fixed-right-patch {
+  background-color: #12161c !important;
+}
+
+/* ===== 壳层覆盖（布局 / 头部 / 侧栏）===== */
+/* 布局 */
+html.dark .enterprise-shell,
+html.dark .enterprise-workspace,
+html.dark .layout-content {
+  background: #0d1118;
+}
+
+html.dark .enterprise-workspace__breadcrumb {
+  background: #171a1e;
+  border-bottom: 1px solid #222b36;
+}
+
+html.dark .enterprise-workspace__breadcrumb .el-breadcrumb__inner,
+html.dark .enterprise-workspace__breadcrumb .el-breadcrumb__inner a {
+  color: #8993a0;
+}
+
+html.dark .enterprise-workspace__breadcrumb .el-breadcrumb__item:last-child .el-breadcrumb__inner {
+  color: #a4b1c3;
+}
+
+/* 头部 */
+html.dark .app-global-header {
+  color: #a4b1c3;
+  background: #171a1e;
+  border-bottom: 1px solid #222b36;
+}
+
+html.dark .app-global-header__brand {
+  color: #e8eaed;
+  background: #171a1e;
+  border-right: 1px solid #222b36;
+}
+
+html.dark .app-global-header__workspace-switch,
+html.dark .app-global-header__icon-button,
+html.dark .app-global-header__user-button {
+  color: #9fa7b2;
+}
+
+html.dark .app-global-header__icon-button {
+  background: #1e2023;
+}
+
+html.dark .app-global-header__icon-button:hover,
+html.dark .app-global-header__user-button:hover {
+  color: #3975ff;
+  background: #10203f;
+}
+
+html.dark .app-global-header__meta {
+  color: #8993a0;
+}
+
+html.dark .notification-panel__header {
+  color: #a4b1c3;
+}
+
+html.dark .notification-panel__item {
+  background: #171a1e;
+}
+
+html.dark .notification-panel__item:hover,
+html.dark .notification-panel__item--unread {
+  background: #1e2023;
+}
+
+html.dark .notification-panel__title {
+  color: #a4b1c3;
+}
+
+html.dark .notification-panel__footer {
+  color: #3975ff;
+  background: #171a1e;
+  border-top: 1px solid #222b36;
+}
+
+/* 侧栏 */
+html.dark .system-sidebar {
+  background: #12161c;
+  border-right: 1px solid #222b36;
+}
+
+html.dark .system-sidebar__tools {
+  border-bottom: 1px solid #222b36;
+}
+
+html.dark .system-sidebar__collapse-button {
+  color: #8993a0;
+  background: #171a1e;
+  border: 1px solid #303238;
+}
+
+html.dark .system-sidebar__collapse-button:hover {
+  color: #3975ff;
+  background: #10203f;
+}
+
+html.dark .system-sidebar__search .el-input__wrapper {
+  background: #12161c;
+  box-shadow: inset 0 0 0 1px #303238 !important;
+}
+
+html.dark .system-sidebar__search .el-input__wrapper:hover,
+html.dark .system-sidebar__search .el-input__wrapper.is-focus {
+  background: #171a1e;
+  box-shadow: inset 0 0 0 1px #3562c9 !important;
+}
+
+html.dark .system-sidebar__group-title {
+  color: #546172;
+}
+
+html.dark .system-sidebar__menu .el-sub-menu__title,
+html.dark .system-sidebar__menu .el-menu-item {
+  color: #9fa7b2;
+}
+
+html.dark .system-sidebar__menu .el-sub-menu__title .el-icon,
+html.dark .system-sidebar__menu .el-menu-item .el-icon {
+  color: #8993a0;
+}
+
+html.dark .system-sidebar__menu .el-sub-menu__title:hover,
+html.dark .system-sidebar__menu .el-menu-item:hover {
+  color: #3975ff;
+  background: #1e2023;
+}
+
+html.dark .system-sidebar__menu .el-sub-menu.is-opened > .el-sub-menu__title {
+  color: #3975ff;
+  background: #171a1e;
+}
+
+html.dark .system-sidebar__menu .el-sub-menu .el-menu {
+  border-left: 1px solid #303238;
+}
+
+html.dark .system-sidebar__menu .el-sub-menu .el-menu-item {
+  color: #8993a0;
+}
+
+html.dark .system-sidebar__menu .el-menu-item.is-active {
+  color: #3975ff;
+  background: #171a1e;
+  box-shadow: inset 0 0 0 1px #3562c9;
+}
+
+html.dark .system-sidebar__menu .el-menu-item.is-active .el-icon,
+html.dark .system-sidebar__menu .el-sub-menu.is-opened > .el-sub-menu__title .el-icon {
+  color: #3975ff;
+}
+
+html.dark .system-sidebar__footer {
+  color: #8993a0;
+  border-top: 1px solid #222b36;
+}
+
+html.dark .system-sidebar__footer button:hover {
+  color: #3975ff;
+}
+
+/* ===== 期权簿记 ===== */
+html.dark .option-bookkeeping-card {
+  background: #12161c;
+}
+
+html.dark .option-bookkeeping-tabs .el-tabs__item {
+  color: #9fa7b2;
+}
+
+html.dark .option-bookkeeping-tabs .el-tabs__item.is-active {
+  color: #3975ff;
+}
+
+html.dark .option-bookkeeping-tabs .el-tabs__nav-wrap::after {
+  background-color: #222b36;
+}
+
+html.dark .option-bookkeeping-summary {
+  background: #171a1e;
+  border-color: #222b36;
+}
+
+html.dark .option-bookkeeping-summary__topline {
+  background: #171a1e;
+  border-color: #222b36;
+}
+
+html.dark .option-bookkeeping-summary__topline strong,
+html.dark .option-bookkeeping-summary__metric-copy > span {
+  color: #e8eaed;
+}
+
+html.dark .option-bookkeeping-summary__topline > div:first-child span,
+html.dark .option-bookkeeping-summary__metric p,
+html.dark .option-bookkeeping-summary__refresh,
+html.dark .option-bookkeeping-summary__total > span,
+html.dark .option-bookkeeping-summary__total strong em,
+html.dark .option-bookkeeping-summary__metric strong em {
+  color: #8993a0;
+}
+
+html.dark .option-bookkeeping-summary__metrics > * + * {
+  border-color: #222b36;
+}
+
+html.dark .option-bookkeeping-summary__metric {
+  background: #171a1e;
+}
+
+html.dark .option-bookkeeping-summary__total {
+  background: #10203f;
+}
+
+html.dark .option-bookkeeping-summary__total strong {
+  color: #6fa1ff;
+}
+
+html.dark .option-bookkeeping-summary__total.is-active::after {
+  background: #6fa1ff;
+}
+
+html.dark .option-bookkeeping-summary__metric--orange .option-bookkeeping-summary__icon {
+  color: #f7ba1e;
+}
+
+html.dark .option-bookkeeping-summary__metric--orange.is-active::after {
+  background: #f7ba1e;
+}
+
+html.dark .option-bookkeeping-summary__metric--blue .option-bookkeeping-summary__icon {
+  color: #7ba2f8;
+}
+
+html.dark .option-bookkeeping-summary__metric--blue.is-active::after {
+  background: #7ba2f8;
+}
+
+html.dark .option-bookkeeping-summary__metric--red .option-bookkeeping-summary__icon {
+  color: #ff6b6b;
+}
+
+html.dark .option-bookkeeping-summary__metric--red.is-active::after {
+  background: #ff6b6b;
+}
+
+html.dark .option-bookkeeping-summary__metric--purple .option-bookkeeping-summary__icon {
+  color: #b37feb;
+}
+
+html.dark .option-bookkeeping-summary__metric--purple.is-active::after {
+  background: #b37feb;
+}
+
+html.dark .option-bookkeeping-summary__metric--purple .option-bookkeeping-summary__icon path {
+  fill: #b37feb;
+}
+
+html.dark .option-bookkeeping-filter label,
+html.dark .option-bookkeeping-maintenance-reason,
+html.dark .option-bookkeeping-maintenance-summary__bulk,
+html.dark .option-bookkeeping-form-field > span {
+  color: #c3cbd6;
+}
+
+html.dark .option-bookkeeping-exception-table .el-table__expanded-cell {
+  background: #171a1e;
+}
+
+html.dark .option-bookkeeping-exception-table th.el-table__cell {
+  background: #1e2631 !important;
+}
+
+html.dark .option-bookkeeping-exception-table .option-bookkeeping-exception-tag--bct-missing {
+  color: #7ba2f8 !important;
+  background: #0e1c3b !important;
+  border-color: #264e9c !important;
+}
+
+html.dark
+  .option-bookkeeping-exception-table
+  .option-bookkeeping-exception-tag--historical-data-modified {
+  color: #b37feb !important;
+  background: #29134d !important;
+  border-color: #5a2c9d !important;
+}
+
+html.dark .option-bookkeeping-differences h3 {
+  color: #e8eaed;
+}
+
+html.dark .option-bookkeeping-maintenance-summary {
+  color: #a4b1c3;
+  background: #171a1e;
+}
+
+html.dark .option-bookkeeping-historical-summary {
+  color: #a4b1c3;
+  background: #171a1e;
+}
+
+html.dark .option-bookkeeping-drawer .el-drawer__header,
+html.dark .option-bookkeeping-drawer .el-drawer__footer,
+html.dark .option-bookkeeping-drawer__layout,
+html.dark .option-bookkeeping-drawer__overview {
+  border-color: #222b36;
+}
+
+html.dark .option-bookkeeping-drawer__header h2,
+html.dark .option-bookkeeping-form-section__heading h3,
+html.dark .option-bookkeeping-form-field__value {
+  color: #e8eaed;
+}
+
+html.dark .option-bookkeeping-drawer__overview,
+html.dark .option-bookkeeping-anchor-menu,
+html.dark .option-bookkeeping-form-section--reason {
+  background: #171a1e;
+}
+
+html.dark .option-bookkeeping-drawer__accounts {
+  background: #12161c;
+}
+
+html.dark .option-bookkeeping-anchor-menu {
+  border-color: #222b36;
+}
+
+html.dark .option-bookkeeping-anchor-menu__title,
+html.dark .option-bookkeeping-form-section__heading span,
+html.dark .option-bookkeeping-form-field {
+  color: #8993a0;
+}
+
+html.dark .option-bookkeeping-anchor-menu__item {
+  color: #a4b1c3;
+}
+
+html.dark .option-bookkeeping-anchor-menu__item:hover,
+html.dark .option-bookkeeping-anchor-menu__item.is-active {
+  color: #7ba2f8;
+  background: #10203f;
+}
+
+html.dark .option-bookkeeping-form-field__value {
+  background: #12161c;
+  border-color: #303238;
+}
+
+html.dark .option-bookkeeping-form-section--reason {
+  border-color: #222b36;
+}
+
+/* ===== 期权生命周期 ===== */
+html.dark .option-lifecycle-page,
+html.dark .option-lifecycle-card,
+html.dark .option-lifecycle-drawer,
+html.dark .option-lifecycle-drawer .el-drawer__header,
+html.dark .option-lifecycle-drawer .el-drawer__body {
+  background: #12161c;
+}
+
+html.dark .option-lifecycle-heading,
+html.dark .option-lifecycle-drawer .el-drawer__header {
+  border-color: #222b36;
+}
+
+html.dark .option-lifecycle-heading h1,
+html.dark .option-lifecycle-drawer .el-drawer__title,
+html.dark .option-lifecycle-detail-section h2 {
+  color: #e8eaed;
+}
+
+html.dark .option-lifecycle-filter label {
+  color: #c3cbd6;
+}
+
+html.dark .option-lifecycle-descriptions .el-descriptions__label,
+html.dark .option-lifecycle-detail-table th.el-table__cell {
+  color: #a4b1c3;
+  background: #1e2631;
+}
+
+html.dark .option-lifecycle-detail-table,
+html.dark .option-lifecycle-detail-table td.el-table__cell {
+  border-color: #303238;
+  background: #12161c;
+}

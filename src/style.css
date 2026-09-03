@@ -1,0 +1,96 @@
+:root {
+  font-family:
+    Inter,
+    -apple-system,
+    system-ui,
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'noto sans',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif;
+  color: #1d2129;
+  background: #f5f7fa;
+  font-synthesis: none;
+  --color-primary: #165dff;
+  --color-primary-light: #f2f4ff;
+  --color-primary-border: #94bfff;
+  --color-success: #00b42a;
+  --color-success-light: #e8ffea;
+  --color-warning: #f7ba1e;
+  --color-warning-light: #fff7e8;
+  --color-danger: #f53f3f;
+  --color-danger-light: #ffece8;
+  --color-text-primary: #1d2129;
+  --color-text-secondary: #4e5969;
+  --color-text-tertiary: #86909c;
+  --color-text-inverse: #ffffff;
+  --color-border: #e5e6eb;
+  --color-border-subtle: #f2f3f5;
+  --color-bg-surface: #ffffff;
+  --color-bg-elevated: #f7f8fa;
+  --color-primary-hover: #0f55d9;
+  --color-primary-soft: #e8f1ff;
+  --color-bg-page: #f5f7fa;
+  --color-border-strong: #c9cdd4;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#app {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
+body {
+  min-height: 100vh;
+  font-family:
+    Inter,
+    -apple-system,
+    system-ui,
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'noto sans',
+    'Microsoft YaHei',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif;
+  font-size: 14px;
+  line-height: 1.15;
+  -webkit-font-smoothing: antialiased;
+}
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.glass-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  box-shadow: 0 1px 3px rgba(29, 33, 41, 0.04);
+}
