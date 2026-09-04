@@ -1516,8 +1516,6 @@ function exportRows() {
 .option-lifecycle-filter {
   display: flex;
   flex: 0 0 auto;
-  flex-wrap: wrap;
-  row-gap: 16px;
   column-gap: 18px;
   align-items: end;
   padding: 20px 0 16px;
@@ -1526,7 +1524,7 @@ function exportRows() {
 .option-lifecycle-filter label {
   display: grid;
   max-width: calc(20% - 14.4px);
-  min-width: 180px;
+  min-width: 140px;
   flex: 1 1 180px;
   gap: 7px;
   color: #344054;
