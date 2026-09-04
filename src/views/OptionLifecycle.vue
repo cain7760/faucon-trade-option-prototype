@@ -7,7 +7,7 @@
       </el-tabs>
 
       <form class="option-lifecycle-filter" @submit.prevent="applyFilters">
-        <label>
+        <label v-if="isColumnVisible('contractNo')">
           <span>背靠背合约编号</span>
           <el-select
             v-model="draftFilters.contractNo"
@@ -26,7 +26,7 @@
             />
           </el-select>
         </label>
-        <label>
+        <label v-if="isColumnVisible('counterparty')">
           <span>交易对手</span>
           <el-select v-model="draftFilters.counterparty" clearable filterable placeholder="请选择">
             <el-option
@@ -37,7 +37,7 @@
             />
           </el-select>
         </label>
-        <label>
+        <label v-if="isColumnVisible('hedger')">
           <span>上手方</span>
           <el-select
             v-model="draftFilters.hedger"
@@ -52,11 +52,11 @@
             <el-option label="HTSC_option" value="HTSC_option" />
           </el-select>
         </label>
-        <label>
+        <label v-if="isColumnVisible('underlying')">
           <span>标的</span>
           <el-input v-model="draftFilters.underlying" clearable placeholder="请输入" />
         </label>
-        <label>
+        <label v-if="isColumnVisible('tenor')">
           <span>期限</span>
           <el-input
             v-model="draftFilters.tenor"
@@ -69,13 +69,13 @@
           </el-input>
         </label>
         <span class="option-lifecycle-filter__break" aria-hidden="true" />
-        <label>
+        <label v-if="isColumnVisible('strikeRate')">
           <span>执行价</span>
           <el-input v-model="draftFilters.strikeRate" clearable type="number" placeholder="请输入">
             <template #append>%</template>
           </el-input>
         </label>
-        <label>
+        <label v-if="isColumnVisible('status')">
           <span>状态</span>
           <el-select v-model="draftFilters.status" clearable placeholder="请选择">
             <el-option label="存续" value="存续" />
@@ -1160,18 +1160,48 @@ const activeSplitCashFlowFields = computed(() => [
   { label: '结算币种', value: selectedLifecycleRow.value?.currency || '—' },
 ])
 
+function isColumnVisible(value: string): boolean {
+  return activeVisibleColumns.value.includes(value)
+}
+
 const filteredRows = computed(() => {
   const filters = appliedFilters.value
-  return sourceRows.value.filter(
-    (row) =>
-      (!filters.contractNo.length || filters.contractNo.includes(row.contractNo)) &&
-      (!filters.counterparty || row.counterparty === filters.counterparty) &&
-      (!filters.hedger.length || filters.hedger.includes(row.hedger)) &&
-      (!filters.underlying || row.underlying.includes(filters.underlying.trim())) &&
-      (!filters.tenor || row.tenor.replace(/M$/i, '') === filters.tenor.trim()) &&
-      (!filters.strikeRate || String(row.strikeRate).includes(filters.strikeRate.trim())) &&
-      (!filters.status || row.status === filters.status),
-  )
+  return sourceRows.value.filter((row) => {
+    if (
+      isColumnVisible('contractNo') &&
+      filters.contractNo.length &&
+      !filters.contractNo.includes(row.contractNo)
+    )
+      return false
+    if (
+      isColumnVisible('counterparty') &&
+      filters.counterparty &&
+      row.counterparty !== filters.counterparty
+    )
+      return false
+    if (isColumnVisible('hedger') && filters.hedger.length && !filters.hedger.includes(row.hedger))
+      return false
+    if (
+      isColumnVisible('underlying') &&
+      filters.underlying &&
+      !row.underlying.includes(filters.underlying.trim())
+    )
+      return false
+    if (
+      isColumnVisible('tenor') &&
+      filters.tenor &&
+      row.tenor.replace(/M$/i, '') !== filters.tenor.trim()
+    )
+      return false
+    if (
+      isColumnVisible('strikeRate') &&
+      filters.strikeRate &&
+      !String(row.strikeRate).includes(filters.strikeRate.trim())
+    )
+      return false
+    if (isColumnVisible('status') && filters.status && row.status !== filters.status) return false
+    return true
+  })
 })
 
 const pagedRows = computed(() => {
