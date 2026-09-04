@@ -297,6 +297,7 @@
           border
           height="100%"
           empty-text="暂无符合条件的生命周期记录"
+          @sort-change="handleSimpleSortChange"
         >
           <el-table-column
             v-for="column in simpleTableColumns"
@@ -308,6 +309,7 @@
             :align="column.align"
             :header-align="column.headerAlign"
             :show-overflow-tooltip="column.showOverflowTooltip"
+            sortable="custom"
           >
             <template v-if="column.kind === 'strikeRate'" #header>
               <span class="option-lifecycle-strike-header">执行价<span>(%)</span></span>
@@ -613,7 +615,7 @@
 
 <script setup lang="ts">
 import JSZip from 'jszip'
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Download, MoreFilled, Operation, RefreshLeft, Search } from '@element-plus/icons-vue'
 
@@ -711,6 +713,10 @@ const selectedLifecycleRow = ref<LifecycleRow | null>(null)
 const selectedTransactionCashFlow = ref<TransactionCashFlow | null>(null)
 const splitAccountTab = ref('客户账号')
 const cashFlowTypes = ref<string[]>([])
+const simpleSortState = ref<{ prop: string; order: 'ascending' | 'descending' | null }>({
+  prop: '',
+  order: null,
+})
 
 const detailedColumnGroups: ColumnGroup[] = [
   {
@@ -1203,9 +1209,57 @@ const filteredRows = computed(() => {
   })
 })
 
+function handleSimpleSortChange(event: {
+  prop?: string
+  order?: 'ascending' | 'descending' | null
+}) {
+  simpleSortState.value = { prop: event.prop || '', order: event.order || null }
+  currentPage.value = 1
+}
+
+function isSortPlaceholder(value: unknown): boolean {
+  return value === '—' || value === '' || value === null || value === undefined
+}
+
+function compareSortableValues(left: unknown, right: unknown): number {
+  const leftNumber =
+    typeof left === 'number' ? left : Number(String(left).replace(/,/g, ''))
+  const rightNumber =
+    typeof right === 'number' ? right : Number(String(right).replace(/,/g, ''))
+  if (Number.isFinite(leftNumber) && Number.isFinite(rightNumber)) {
+    return leftNumber - rightNumber
+  }
+  const leftText = String(left)
+  const rightText = String(right)
+  if (leftText < rightText) return -1
+  if (leftText > rightText) return 1
+  return 0
+}
+
+const sortedRows = computed(() => {
+  if (viewMode.value !== 'simple') return filteredRows.value
+  const { prop, order } = simpleSortState.value
+  if (!prop || !order) return filteredRows.value
+  const direction = order === 'ascending' ? 1 : -1
+  return [...filteredRows.value].sort((left, right) => {
+    const leftValue = left[prop as keyof LifecycleRow]
+    const rightValue = right[prop as keyof LifecycleRow]
+    const leftEmpty = isSortPlaceholder(leftValue)
+    const rightEmpty = isSortPlaceholder(rightValue)
+    if (leftEmpty && rightEmpty) return 0
+    if (leftEmpty) return 1
+    if (rightEmpty) return -1
+    return compareSortableValues(leftValue, rightValue) * direction
+  })
+})
+
 const pagedRows = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value
-  return filteredRows.value.slice(start, start + pageSize.value)
+  return sortedRows.value.slice(start, start + pageSize.value)
+})
+
+watch(viewMode, () => {
+  simpleSortState.value = { prop: '', order: null }
 })
 
 const filteredActualCashFlows = computed(() =>
@@ -1317,6 +1371,7 @@ function applyFilters() {
 function resetFilters() {
   Object.assign(draftFilters, emptyFilters())
   appliedFilters.value = emptyFilters()
+  simpleSortState.value = { prop: '', order: null }
   currentPage.value = 1
 }
 
