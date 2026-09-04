@@ -68,7 +68,6 @@
             <template #append>M</template>
           </el-input>
         </label>
-        <span class="option-lifecycle-filter__break" aria-hidden="true" />
         <label v-if="isColumnVisible('strikeRate')">
           <span>执行价</span>
           <el-input v-model="draftFilters.strikeRate" clearable type="number" placeholder="请输入">
@@ -1518,6 +1517,7 @@ function exportRows() {
   display: flex;
   flex: 0 0 auto;
   flex-wrap: wrap;
+  row-gap: 16px;
   column-gap: 18px;
   align-items: end;
   padding: 20px 0 16px;
@@ -1532,12 +1532,6 @@ function exportRows() {
   color: #344054;
   font-size: 13px;
   font-weight: 600;
-}
-
-.option-lifecycle-filter__break {
-  width: 100%;
-  height: 16px;
-  flex: 0 0 100%;
 }
 
 .option-lifecycle-filter :deep(.el-input),
