@@ -293,7 +293,7 @@
         <el-table
           v-else
           :data="pagedRows"
-          class="option-lifecycle-table"
+          class="option-lifecycle-table option-lifecycle-table--simple"
           border
           height="100%"
           empty-text="暂无符合条件的生命周期记录"
@@ -322,7 +322,7 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            width="90"
+            width="204"
             fixed="right"
             align="center"
             header-align="left"
@@ -393,6 +393,15 @@
             </template>
             <template #default="{ row }">
               <el-button link type="primary" @click="openDetail(row)">详情</el-button>
+              <el-button
+                link
+                type="primary"
+                @click="downloadCounterpartyDocuments(row, '交易确认书')"
+                >交易确认书</el-button
+              >
+              <el-button link type="primary" @click="downloadCounterpartyDocuments(row, '估值报告')"
+                >估值报告</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -1993,6 +2002,13 @@ function exportRows() {
 :global(.el-dialog .option-lifecycle-detail-table th .cell) {
   white-space: nowrap;
   word-break: keep-all;
+}
+
+.option-lifecycle-table--simple :deep(th .cell) {
+  white-space: normal;
+  word-break: break-all;
+  overflow: visible;
+  text-overflow: clip;
 }
 
 .option-lifecycle-table :deep(.el-button.is-link),
