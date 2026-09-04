@@ -1069,6 +1069,15 @@ function sumMoneyAmounts(values: string[]): string {
   return formatMoneyAmount(numericValues.reduce((total, value) => total + parseMoneyAmount(value), 0))
 }
 
+function sumDistinctMoneyAmounts(values: string[]): string {
+  const numericValues = Array.from(new Set(values)).filter((value) => {
+    const normalized = value.replace(/,/g, '').trim()
+    return normalized !== '' && normalized !== '—'
+  })
+  if (numericValues.length === 0) return '—'
+  return formatMoneyAmount(numericValues.reduce((total, value) => total + parseMoneyAmount(value), 0))
+}
+
 const simpleLifecycleRows: LifecycleRow[] = (() => {
   const groups = new Map<string, LifecycleRow[]>()
   for (const row of detailedLifecycleRows) {
@@ -1089,6 +1098,9 @@ const simpleLifecycleRows: LifecycleRow[] = (() => {
       ...representative,
       id: index + 1,
       hedgerCount: hedgerRows.length,
+      customerInitialNotional: sumDistinctMoneyAmounts(rows.map((row) => row.customerInitialNotional)),
+      customerPremium: sumDistinctMoneyAmounts(rows.map((row) => row.customerPremium)),
+      customerSettlement: sumDistinctMoneyAmounts(rows.map((row) => row.customerSettlement)),
       hedgerInitialNotional: sumMoneyAmounts(hedgerRows.map((row) => row.hedgerInitialNotional)),
       hedgerPremium: sumMoneyAmounts(hedgerRows.map((row) => row.hedgerPremium)),
       hedgerSettlement: sumMoneyAmounts(rows.map((row) => row.hedgerSettlement)),
