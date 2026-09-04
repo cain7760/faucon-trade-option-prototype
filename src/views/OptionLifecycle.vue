@@ -973,12 +973,6 @@ const baseRows: Omit<LifecycleRow, 'id' | 'eventNo'>[] = [
   },
 ]
 
-const simpleLifecycleRows: LifecycleRow[] = Array.from({ length: 14 }, (_, index) => ({
-  ...baseRows[index % baseRows.length],
-  id: index + 1,
-  eventNo: String(39457839 + index),
-}))
-
 const multiRecordRows: Omit<LifecycleRow, 'id' | 'eventNo'>[] = [
   {
     ...baseRows[1],
@@ -1054,6 +1048,53 @@ const detailedLifecycleRows: LifecycleRow[] = [
   id: index + 1,
   eventNo: String(39457839 + index),
 }))
+
+function parseMoneyAmount(value: string): number {
+  const normalized = value.replace(/,/g, '').trim()
+  if (!normalized || normalized === '—') return 0
+  const number = Number(normalized)
+  return Number.isFinite(number) ? number : 0
+}
+
+function formatMoneyAmount(value: number): string {
+  return Math.round(value).toLocaleString('en-US')
+}
+
+function sumMoneyAmounts(values: string[]): string {
+  const numericValues = values.filter((value) => {
+    const normalized = value.replace(/,/g, '').trim()
+    return normalized !== '' && normalized !== '—'
+  })
+  if (numericValues.length === 0) return '—'
+  return formatMoneyAmount(numericValues.reduce((total, value) => total + parseMoneyAmount(value), 0))
+}
+
+const simpleLifecycleRows: LifecycleRow[] = (() => {
+  const groups = new Map<string, LifecycleRow[]>()
+  for (const row of detailedLifecycleRows) {
+    const rows = groups.get(row.contractNo) ?? []
+    rows.push(row)
+    groups.set(row.contractNo, rows)
+  }
+
+  return Array.from(groups.values()).map((rows, index) => {
+    const representative = rows[0]
+    const distinctHedgers = new Map<string, LifecycleRow>()
+    for (const row of rows) {
+      if (!distinctHedgers.has(row.hedger)) distinctHedgers.set(row.hedger, row)
+    }
+    const hedgerRows = Array.from(distinctHedgers.values())
+
+    return {
+      ...representative,
+      id: index + 1,
+      hedgerCount: hedgerRows.length,
+      hedgerInitialNotional: sumMoneyAmounts(hedgerRows.map((row) => row.hedgerInitialNotional)),
+      hedgerPremium: sumMoneyAmounts(hedgerRows.map((row) => row.hedgerPremium)),
+      hedgerSettlement: sumMoneyAmounts(rows.map((row) => row.hedgerSettlement)),
+    }
+  })
+})()
 
 const sourceRows = computed(() =>
   viewMode.value === 'complete' ? detailedLifecycleRows : simpleLifecycleRows,
