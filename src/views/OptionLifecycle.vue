@@ -308,6 +308,7 @@
             :fixed="column.fixed"
             :align="column.align"
             :header-align="column.headerAlign"
+            :label-class-name="column.wrapHeader ? 'option-lifecycle-header--wrap' : undefined"
             :show-overflow-tooltip="column.showOverflowTooltip"
             sortable="custom"
           >
@@ -705,6 +706,7 @@ interface ColumnOption {
   headerAlign?: 'left' | 'center' | 'right'
   fixed?: true | 'left' | 'right'
   showOverflowTooltip?: boolean
+  wrapHeader?: boolean
   kind?: 'optionInfo' | 'strikeRate' | 'status'
 }
 
@@ -824,14 +826,14 @@ const simpleColumnGroups: ColumnGroup[] = [
         headerAlign: 'right',
         kind: 'strikeRate',
       },
-      { value: 'customerInitialNotional', label: '客户期初名义本金', width: 146, align: 'right' },
-      { value: 'hedgerInitialNotional', label: '上手期初名义本金', width: 146, align: 'right' },
+      { value: 'customerInitialNotional', label: '客户期初名义本金', width: 146, align: 'right', wrapHeader: true },
+      { value: 'hedgerInitialNotional', label: '上手期初名义本金', width: 146, align: 'right', wrapHeader: true },
       { value: 'hedgerCount', label: '上手方数量', width: 100, align: 'right' },
       { value: 'customerPremium', label: '客户期权费', width: 124, align: 'right' },
       { value: 'hedgerPremium', label: '上手期权费', width: 124, align: 'right' },
       { value: 'status', label: '状态', width: 82, fixed: 'right', kind: 'status' },
-      { value: 'customerSettlement', label: '客户期权结算金额', width: 148, align: 'right' },
-      { value: 'hedgerSettlement', label: '上手期权结算金额', width: 148, align: 'right' },
+      { value: 'customerSettlement', label: '客户期权结算金额', width: 148, align: 'right', wrapHeader: true },
+      { value: 'hedgerSettlement', label: '上手期权结算金额', width: 148, align: 'right', wrapHeader: true },
     ],
   },
 ]
@@ -2004,7 +2006,7 @@ function exportRows() {
   word-break: keep-all;
 }
 
-.option-lifecycle-table--simple :deep(th .cell) {
+.option-lifecycle-table--simple :deep(th.option-lifecycle-header--wrap .cell) {
   white-space: normal;
   word-break: break-all;
   overflow: visible;
