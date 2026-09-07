@@ -2744,7 +2744,8 @@ onUnmounted(() => {
   padding-top: 20px;
 }
 
-.option-bookkeeping-history__filter {
+.option-bookkeeping-history .option-bookkeeping-history__filter {
+  margin-top: 0;
   margin-bottom: 4px;
 }
 
