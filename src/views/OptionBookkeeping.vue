@@ -310,30 +310,6 @@
                           show-overflow-tooltip
                         />
                         <el-table-column
-                          prop="modifiedBy"
-                          label="变更人"
-                          width="80"
-                          show-overflow-tooltip
-                        />
-                        <el-table-column
-                          prop="approvedBy"
-                          label="审批人"
-                          width="80"
-                          show-overflow-tooltip
-                        />
-                        <el-table-column
-                          prop="coverReason"
-                          label="原因"
-                          width="120"
-                          show-overflow-tooltip
-                        />
-                        <el-table-column
-                          prop="approvedAt"
-                          label="审批时间"
-                          width="164"
-                          show-overflow-tooltip
-                        />
-                        <el-table-column
                           v-for="snapshotField in snapshotColumns(row.records)"
                           :key="snapshotField.key"
                           :label="snapshotField.label"
@@ -372,6 +348,30 @@
                             </span>
                           </template>
                         </el-table-column>
+                        <el-table-column
+                          prop="modifiedBy"
+                          label="变更人"
+                          width="80"
+                          show-overflow-tooltip
+                        />
+                        <el-table-column
+                          prop="approvedBy"
+                          label="审批人"
+                          width="80"
+                          show-overflow-tooltip
+                        />
+                        <el-table-column
+                          prop="coverReason"
+                          label="原因"
+                          width="120"
+                          show-overflow-tooltip
+                        />
+                        <el-table-column
+                          prop="approvedAt"
+                          label="审批时间"
+                          width="164"
+                          show-overflow-tooltip
+                        />
                       </el-table>
                     </div>
                   </template>
