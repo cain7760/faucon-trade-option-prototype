@@ -543,6 +543,15 @@
             <el-option label="期权费" value="期权费" />
             <el-option label="期权收益" value="期权收益" />
           </el-select>
+          <el-date-picker
+            v-model="cashFlowDateRange"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="YYYY-MM-DD"
+            style="width: 260px"
+          />
         </div>
         <el-table
           :data="filteredActualCashFlows"
@@ -592,20 +601,14 @@
         </el-tabs>
 
         <div class="option-lifecycle-split-drawer__content">
-          <section class="option-lifecycle-readonly-section">
-            <h3>交易信息</h3>
+          <section
+            v-for="section in activeSplitSections"
+            :key="section.title"
+            class="option-lifecycle-readonly-section"
+          >
+            <h3>{{ section.title }}</h3>
             <div class="option-lifecycle-readonly-grid">
-              <label v-for="field in activeSplitTradeFields" :key="field.label">
-                <span>{{ field.label }}</span>
-                <div>{{ field.value || '—' }}</div>
-              </label>
-            </div>
-          </section>
-
-          <section class="option-lifecycle-readonly-section">
-            <h3>资金信息</h3>
-            <div class="option-lifecycle-readonly-grid">
-              <label v-for="field in activeSplitCashFlowFields" :key="field.label">
+              <label v-for="field in section.fields" :key="field.label">
                 <span>{{ field.label }}</span>
                 <div>{{ field.value || '—' }}</div>
               </label>
@@ -724,6 +727,7 @@ const selectedLifecycleRow = ref<LifecycleRow | null>(null)
 const selectedTransactionCashFlow = ref<TransactionCashFlow | null>(null)
 const splitAccountTab = ref('客户账号')
 const cashFlowTypes = ref<string[]>([])
+const cashFlowDateRange = ref<[string, string] | null>(null)
 const simpleSortState = ref<{ prop: string; order: 'ascending' | 'descending' | null }>({
   prop: '',
   order: null,
@@ -1367,23 +1371,187 @@ const activeSplitAccount = computed(
   () => splitRows.find((row) => row.accountType === splitAccountTab.value) || splitRows[0],
 )
 
-const activeSplitTradeFields = computed(() => [
-  { label: '账户类型', value: activeSplitAccount.value.accountType },
-  { label: '交易编号', value: activeSplitAccount.value.tradeNo },
-  { label: '交易日期', value: selectedTransactionCashFlow.value?.date || '—' },
-  { label: '开平类型', value: selectedTransactionCashFlow.value?.type || '—' },
-  { label: '背靠背合约编号', value: selectedLifecycleRow.value?.contractNo || '—' },
-  { label: '标的', value: selectedLifecycleRow.value?.underlying || '—' },
-  { label: '交易对手', value: selectedLifecycleRow.value?.counterparty || '—' },
-  { label: '上手方', value: selectedLifecycleRow.value?.hedger || '—' },
-  { label: '我方角色', value: activeSplitAccount.value.role },
-])
+interface SplitFieldItem {
+  label: string
+  value: string
+}
 
-const activeSplitCashFlowFields = computed(() => [
-  { label: '名义本金变化', value: activeSplitAccount.value.notional },
-  { label: '现金流（本方方向）', value: activeSplitAccount.value.cashFlow },
-  { label: '结算币种', value: selectedLifecycleRow.value?.currency || '—' },
-])
+interface SplitSection {
+  title: string
+  fields: SplitFieldItem[]
+}
+
+const openingSplitSections: SplitSection[] = [
+  {
+    title: '期权要素',
+    fields: [
+      { label: '交易对手', value: 'CWI04_option' },
+      { label: '标的代码', value: '000858.SZ' },
+      { label: '标的名称', value: '五粮液' },
+      { label: '期限', value: '3M' },
+      { label: '行权价系数', value: '100.00%' },
+      { label: '参与率', value: '100.00%' },
+      { label: '起始日', value: '2026-08-20' },
+      { label: '期末观察日', value: '2026-11-18' },
+      { label: '结算日', value: '2026-11-23' },
+      { label: '结算币种', value: 'CNY' },
+      { label: '期初价格', value: '118.00' },
+      { label: '行权价', value: '118.00' },
+      { label: '分红规则', value: '不调整' },
+      { label: '敲出规则', value: '无' },
+      { label: '最快行权日', value: '2026-11-18' },
+      { label: '名义本金', value: '2,000 万 CNY' },
+      { label: '前端期权费率', value: '5.50%' },
+    ],
+  },
+  {
+    title: '交易信息',
+    fields: [
+      { label: '资金账号', value: 'CICC-003' },
+      { label: '交易达成日', value: '2026-08-20' },
+      { label: '交易币种', value: 'CNY' },
+      { label: '买卖方向', value: '买入' },
+      { label: '交易日历', value: '中国大陆交易日历' },
+    ],
+  },
+  {
+    title: '基础信息',
+    fields: [
+      { label: '簿记主体', value: 'FAUCON TRADE' },
+      { label: '结构类型', value: '香草期权' },
+      { label: '业务类型', value: '场外期权' },
+      { label: '期权类型', value: '看涨期权' },
+      { label: '期权订单编号', value: 'ORD-20260820-013' },
+      { label: '交易确认书编号', value: 'TB-20260820-013' },
+    ],
+  },
+  {
+    title: '日期信息',
+    fields: [
+      { label: '到期日', value: '2026-11-20' },
+      { label: '前端期权费支付日', value: '2026-08-21' },
+    ],
+  },
+  {
+    title: '费率信息',
+    fields: [
+      { label: '期初价格类型', value: '收盘价' },
+      { label: '期末价格类型', value: '收盘价' },
+      { label: '最低收益率', value: '0.00%' },
+      { label: '期权费类型', value: '前端支付' },
+    ],
+  },
+  {
+    title: '计息规则',
+    fields: [
+      { label: '是否年化', value: '是' },
+      { label: '年化天数', value: '365' },
+      { label: '计息天数计算', value: '实际天数' },
+      { label: '计息截止日类型', value: '包含到期日' },
+    ],
+  },
+  {
+    title: '精度配置',
+    fields: [
+      { label: '价格精度', value: '2' },
+      { label: '金额精度', value: '2' },
+      { label: '百分比精度', value: '4' },
+    ],
+  },
+  {
+    title: '背靠背信息',
+    fields: [
+      { label: '背靠背标签', value: 'CICC' },
+      { label: '背靠背合约', value: 'B2B-20260820-013' },
+    ],
+  },
+]
+
+const closingSplitSections: SplitSection[] = [
+  {
+    title: '期权要素',
+    fields: [
+      { label: '标的代码', value: '000001.SZ' },
+      { label: '标的名称', value: '平安银行' },
+      { label: '期权类型', value: '看涨期权' },
+      { label: '期限', value: '3M' },
+      { label: '期初名义本金', value: '2,000 万 CNY' },
+      { label: '可平仓名义本金', value: '2,000 万 CNY' },
+      { label: '平仓名义本金', value: '800 万 CNY' },
+      { label: '剩余名义本金', value: '1,200 万 CNY' },
+      { label: '平仓日', value: '2026-08-25' },
+      { label: '平仓价', value: '11.20' },
+      { label: '期初价格', value: '10.80' },
+      { label: '行权价', value: '10.80' },
+      { label: '前端期权费率', value: '5.50%' },
+      { label: '前端期权费', value: '110 万 CNY' },
+    ],
+  },
+  {
+    title: '交易信息',
+    fields: [
+      { label: '交易对手', value: 'CICC_option' },
+      { label: '资金账号', value: 'CICC-001' },
+      { label: '买卖方向', value: '卖出' },
+      { label: '交易币种', value: 'CNY' },
+    ],
+  },
+  {
+    title: '基础信息',
+    fields: [
+      { label: '结构类型', value: '香草期权' },
+      { label: '业务类型', value: '场外期权' },
+      { label: '交易确认书编号', value: 'TB-20260818-001' },
+      { label: '平仓确认书编号', value: 'UC-20260825-003' },
+    ],
+  },
+  {
+    title: '平仓信息',
+    fields: [
+      { label: '是否全平', value: '否' },
+      { label: '平仓汇率', value: '1.0000' },
+      { label: '结算币种', value: 'CNY' },
+    ],
+  },
+  {
+    title: '结算支付信息',
+    fields: [
+      { label: '期权结算支付金额', value: '36 万 CNY' },
+      { label: '名义币种支付金额', value: '36 万 CNY' },
+      { label: '期权结算支付日', value: '2026-08-28' },
+    ],
+  },
+  {
+    title: '金额费用信息',
+    fields: [{ label: '期权费摊销额', value: '44 万 CNY' }],
+  },
+  {
+    title: '精度配置',
+    fields: [
+      { label: '价格精度', value: '2' },
+      { label: '金额精度', value: '2' },
+      { label: '百分比精度', value: '4' },
+    ],
+  },
+]
+
+const activeSplitSections = computed<SplitSection[]>(() => {
+  const account = activeSplitAccount.value
+  const isOpening = selectedTransactionCashFlow.value?.type === '开仓'
+  const accountSection: SplitSection = {
+    title: '账户信息',
+    fields: [
+      { label: '账户类型', value: account.accountType },
+      { label: '交易编号', value: account.tradeNo },
+      { label: '我方角色', value: account.role },
+      { label: '名义本金变化', value: account.notional },
+      { label: '现金流（本方方向）', value: account.cashFlow },
+      { label: '交易日期', value: selectedTransactionCashFlow.value?.date || '—' },
+      { label: '开平类型', value: selectedTransactionCashFlow.value?.type || '—' },
+    ],
+  }
+  return [accountSection, ...(isOpening ? openingSplitSections : closingSplitSections)]
+})
 
 function isColumnVisible(value: string): boolean {
   return activeVisibleColumns.value.includes(value)
@@ -1482,11 +1650,17 @@ watch(viewMode, () => {
   simpleSortState.value = { prop: '', order: null }
 })
 
-const filteredActualCashFlows = computed(() =>
-  cashFlowTypes.value.length
-    ? actualCashFlows.filter((row) => cashFlowTypes.value.includes(row.type))
-    : actualCashFlows,
-)
+const filteredActualCashFlows = computed(() => {
+  let rows = actualCashFlows
+  if (cashFlowTypes.value.length) {
+    rows = rows.filter((row) => cashFlowTypes.value.includes(row.type))
+  }
+  if (cashFlowDateRange.value && cashFlowDateRange.value.length === 2) {
+    const [start, end] = cashFlowDateRange.value
+    rows = rows.filter((row) => row.date >= start && row.date <= end)
+  }
+  return rows
+})
 
 const actualCashFlowTotalCny = computed(() =>
   filteredActualCashFlows.value.reduce((total, row) => total + cashFlowAmountToCny(row.amount), 0),
@@ -1638,7 +1812,7 @@ function cashFlowSummary() {
   return [
     '汇总：',
     '',
-    '2,000,000',
+    '',
     '',
     '',
     '',
@@ -2213,6 +2387,7 @@ function exportRows() {
   background: #f7f8fa;
   font-size: 13px;
   font-weight: 600;
+  text-align: right;
   white-space: nowrap;
 }
 
