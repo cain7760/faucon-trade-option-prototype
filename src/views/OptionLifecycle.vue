@@ -105,7 +105,6 @@
           border
           height="100%"
           empty-text="暂无符合条件的生命周期记录"
-          :span-method="detailSpanMethod"
         >
           <el-table-column
             v-for="column in detailedTableColumns('基础信息')"
@@ -700,15 +699,6 @@ interface TransactionCashFlow {
   customerCashFlow: string
   middleCashFlow: string
   hedgerCashFlow: string
-}
-
-interface LifecycleSpanProps {
-  row: LifecycleRow
-  column: {
-    property?: string
-    columnKey?: string
-  }
-  rowIndex: number
 }
 
 interface ColumnOption {
@@ -1754,28 +1744,6 @@ const actualCashFlowTotalCny = computed(() =>
   filteredActualCashFlows.value.reduce((total, row) => total + cashFlowAmountToCny(row.amount), 0),
 )
 
-const optionMergedProperties = new Set([
-  'optionInfo',
-  'tenor',
-  'strikeRate',
-  'counterparty',
-  'customerCurrentNotional',
-  'contractNo',
-  'customerInitialNotional',
-  'customerPremiumRate',
-  'customerOpenPrice',
-  'currency',
-  'customerPremium',
-])
-
-const hedgerMergedProperties = new Set([
-  'hedger',
-  'hedgerInitialNotional',
-  'hedgerPremiumRate',
-  'hedgerOpenPrice',
-  'hedgerPremium',
-])
-
 function sortColumnOptions(options: ColumnOption[], order: string[]) {
   const orderMap = new Map(order.map((value, index) => [value, index]))
   return [...options].sort(
@@ -1866,34 +1834,6 @@ function openSplitDetail(row: TransactionCashFlow) {
   selectedTransactionCashFlow.value = row
   splitAccountTab.value = splitRows[0].accountType
   splitDetailVisible.value = true
-}
-
-function mergedSpan(rowIndex: number, equals: (current: LifecycleRow | undefined) => boolean) {
-  if (rowIndex > 0 && equals(pagedRows.value[rowIndex - 1])) return [0, 0]
-
-  let rowSpan = 1
-  while (
-    rowIndex + rowSpan < pagedRows.value.length &&
-    equals(pagedRows.value[rowIndex + rowSpan])
-  ) {
-    rowSpan += 1
-  }
-  return [rowSpan, 1]
-}
-
-function detailSpanMethod({ row, column, rowIndex }: LifecycleSpanProps) {
-  if (column.columnKey === 'operation' || optionMergedProperties.has(column.property || '')) {
-    return mergedSpan(rowIndex, (current) => current?.optionInfo === row.optionInfo)
-  }
-
-  if (hedgerMergedProperties.has(column.property || '')) {
-    return mergedSpan(
-      rowIndex,
-      (current) => current?.optionInfo === row.optionInfo && current?.hedger === row.hedger,
-    )
-  }
-
-  return [1, 1]
 }
 
 function cashFlowSummary() {
