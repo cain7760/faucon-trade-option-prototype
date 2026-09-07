@@ -550,8 +550,12 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             value-format="YYYY-MM-DD"
-            style="width: 260px"
+            style="width: 210px; flex: 0 0 auto"
           />
+          <el-button type="primary" size="small" :icon="Search" @click="applyCashFlowFilters"
+            >查询</el-button
+          >
+          <el-button size="small" :icon="RefreshLeft" @click="resetCashFlowFilters">重置</el-button>
         </div>
         <el-table
           :data="filteredActualCashFlows"
@@ -607,12 +611,15 @@
             class="option-lifecycle-readonly-section"
           >
             <h3>{{ section.title }}</h3>
-            <div class="option-lifecycle-readonly-grid">
-              <label v-for="field in section.fields" :key="field.label">
-                <span>{{ field.label }}</span>
-                <div>{{ field.value || '—' }}</div>
-              </label>
-            </div>
+            <el-descriptions :column="2" border class="option-lifecycle-descriptions">
+              <el-descriptions-item
+                v-for="field in section.fields"
+                :key="field.label"
+                :label="field.label"
+              >
+                {{ field.value || '—' }}
+              </el-descriptions-item>
+            </el-descriptions>
           </section>
         </div>
       </div>
@@ -728,6 +735,8 @@ const selectedTransactionCashFlow = ref<TransactionCashFlow | null>(null)
 const splitAccountTab = ref('客户账号')
 const cashFlowTypes = ref<string[]>([])
 const cashFlowDateRange = ref<[string, string] | null>(null)
+const appliedCashFlowTypes = ref<string[]>([])
+const appliedCashFlowDateRange = ref<[string, string] | null>(null)
 const simpleSortState = ref<{ prop: string; order: 'ascending' | 'descending' | null }>({
   prop: '',
   order: null,
@@ -1136,6 +1145,36 @@ const baseRows: Omit<LifecycleRow, 'id' | 'eventNo'>[] = [
     hedgerPremium: '345,600',
     status: '了结',
   },
+  {
+    optionInfo: '600036.SH-100C-100%-2M-20260801-20261001',
+    tenor: '2M',
+    strikeRate: 100,
+    counterparty: 'Sun_option',
+    hedger: 'HTSC_option',
+    hedgerCount: 1,
+    customerCurrentNotional: '8,000,000',
+    hedgerCurrentNotional: '8,000,000',
+    contractNo: 'HTSC-OPT-Sun-20260801-0009',
+    underlying: '招商银行（600036）',
+    openDate: '2026-08-01',
+    customerInitialNotional: '8,000,000',
+    hedgerInitialNotional: '8,000,000',
+    customerPremiumRate: '3.20%',
+    hedgerPremiumRate: '3.05%',
+    customerOpenPrice: '46.50',
+    hedgerOpenPrice: '46.35',
+    closeDate: '—',
+    customerClosePrice: '—',
+    hedgerClosePrice: '—',
+    customerSettlement: '—',
+    hedgerSettlement: '—',
+    openRevenue: '32,000',
+    closeRevenue: '—',
+    currency: 'CNY',
+    customerPremium: '256,000',
+    hedgerPremium: '244,000',
+    status: '存续',
+  },
 ]
 
 const multiRecordRows: Omit<LifecycleRow, 'id' | 'eventNo'>[] = [
@@ -1214,6 +1253,7 @@ const detailedLifecycleRows: LifecycleRow[] = [
   baseRows[5],
   baseRows[6],
   baseRows[7],
+  baseRows[8],
 ].map((row, index) => ({
   ...row,
   id: index + 1,
@@ -1652,15 +1692,29 @@ watch(viewMode, () => {
 
 const filteredActualCashFlows = computed(() => {
   let rows = actualCashFlows
-  if (cashFlowTypes.value.length) {
-    rows = rows.filter((row) => cashFlowTypes.value.includes(row.type))
+  if (appliedCashFlowTypes.value.length) {
+    rows = rows.filter((row) => appliedCashFlowTypes.value.includes(row.type))
   }
-  if (cashFlowDateRange.value && cashFlowDateRange.value.length === 2) {
-    const [start, end] = cashFlowDateRange.value
+  if (appliedCashFlowDateRange.value && appliedCashFlowDateRange.value.length === 2) {
+    const [start, end] = appliedCashFlowDateRange.value
     rows = rows.filter((row) => row.date >= start && row.date <= end)
   }
   return rows
 })
+
+function applyCashFlowFilters() {
+  appliedCashFlowTypes.value = [...cashFlowTypes.value]
+  appliedCashFlowDateRange.value = cashFlowDateRange.value
+    ? [...cashFlowDateRange.value]
+    : null
+}
+
+function resetCashFlowFilters() {
+  cashFlowTypes.value = []
+  cashFlowDateRange.value = null
+  appliedCashFlowTypes.value = []
+  appliedCashFlowDateRange.value = null
+}
 
 const actualCashFlowTotalCny = computed(() =>
   filteredActualCashFlows.value.reduce((total, row) => total + cashFlowAmountToCny(row.amount), 0),
