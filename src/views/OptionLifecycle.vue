@@ -310,7 +310,7 @@
             :header-align="column.headerAlign"
             :label-class-name="column.wrapHeader ? 'option-lifecycle-header--wrap' : undefined"
             :show-overflow-tooltip="column.showOverflowTooltip"
-            sortable="custom"
+            :sortable="column.sortable ? 'custom' : false"
           >
             <template v-if="column.kind === 'strikeRate'" #header>
               <span class="option-lifecycle-strike-header">执行价<span>(%)</span></span>
@@ -326,7 +326,7 @@
             width="204"
             fixed="right"
             align="center"
-            header-align="left"
+            header-align="center"
             class-name="option-lifecycle-operation-column"
           >
             <template #header>
@@ -721,6 +721,7 @@ interface ColumnOption {
   fixed?: true | 'left' | 'right'
   showOverflowTooltip?: boolean
   wrapHeader?: boolean
+  sortable?: boolean
   kind?: 'optionInfo' | 'strikeRate' | 'status'
 }
 
@@ -831,10 +832,10 @@ const simpleColumnGroups: ColumnGroup[] = [
         fixed: 'left',
         showOverflowTooltip: true,
       },
-      { value: 'underlying', label: '标的', width: 168, fixed: 'left', showOverflowTooltip: true },
-      { value: 'openDate', label: '开仓日期', width: 108, fixed: 'left' },
-      { value: 'counterparty', label: '交易对手', width: 130, showOverflowTooltip: true },
-      { value: 'customerOpenPrice', label: '客户开仓价', width: 106, align: 'right' },
+      { value: 'counterparty', label: '交易对手', width: 130, fixed: 'left', showOverflowTooltip: true },
+      { value: 'underlying', label: '标的', width: 168, showOverflowTooltip: true },
+      { value: 'openDate', label: '开仓日期', width: 108 },
+      { value: 'customerOpenPrice', label: '客户开仓价', width: 106, align: 'right', sortable: true },
       {
         value: 'strikeRate',
         label: '执行价',
@@ -842,15 +843,44 @@ const simpleColumnGroups: ColumnGroup[] = [
         align: 'right',
         headerAlign: 'right',
         kind: 'strikeRate',
+        sortable: true,
       },
-      { value: 'customerInitialNotional', label: '客户期初名义本金', width: 146, align: 'right', wrapHeader: true },
-      { value: 'hedgerInitialNotional', label: '上手期初名义本金', width: 146, align: 'right', wrapHeader: true },
-      { value: 'hedgerCount', label: '上手方数量', width: 100, align: 'right' },
-      { value: 'customerPremium', label: '客户期权费', width: 124, align: 'right' },
-      { value: 'hedgerPremium', label: '上手期权费', width: 124, align: 'right' },
-      { value: 'status', label: '状态', width: 82, fixed: 'right', kind: 'status' },
-      { value: 'customerSettlement', label: '客户期权结算金额', width: 148, align: 'right', wrapHeader: true },
-      { value: 'hedgerSettlement', label: '上手期权结算金额', width: 148, align: 'right', wrapHeader: true },
+      {
+        value: 'customerInitialNotional',
+        label: '客户期初名义本金',
+        width: 146,
+        align: 'right',
+        wrapHeader: true,
+        sortable: true,
+      },
+      {
+        value: 'hedgerInitialNotional',
+        label: '上手期初名义本金',
+        width: 146,
+        align: 'right',
+        wrapHeader: true,
+        sortable: true,
+      },
+      { value: 'hedgerCount', label: '上手方数量', width: 100, align: 'right', sortable: true },
+      { value: 'customerPremium', label: '客户期权费', width: 124, align: 'right', sortable: true },
+      { value: 'hedgerPremium', label: '上手期权费', width: 124, align: 'right', sortable: true },
+      { value: 'status', label: '状态', width: 82, kind: 'status' },
+      {
+        value: 'customerSettlement',
+        label: '客户期权结算金额',
+        width: 148,
+        align: 'right',
+        wrapHeader: true,
+        sortable: true,
+      },
+      {
+        value: 'hedgerSettlement',
+        label: '上手期权结算金额',
+        width: 148,
+        align: 'right',
+        wrapHeader: true,
+        sortable: true,
+      },
     ],
   },
 ]
@@ -2070,6 +2100,10 @@ function exportRows() {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+}
+
+.option-lifecycle-table--simple :deep(.option-lifecycle-operation-header) {
+  justify-content: center;
 }
 
 .option-lifecycle-column-trigger {
