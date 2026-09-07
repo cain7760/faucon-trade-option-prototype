@@ -18,6 +18,14 @@
             <el-breadcrumb-item v-if="route.meta?.detail">问题中心</el-breadcrumb-item>
             <el-breadcrumb-item>{{ currentTitle }}</el-breadcrumb-item>
           </el-breadcrumb>
+          <a
+            class="enterprise-workspace__doc-link"
+            href="https://my.feishu.cn/wiki/WPNdwvozQii4TtkdlNBcAJ6anef?from=from_copylink"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            查看文档
+          </a>
         </div>
 
         <el-main class="layout-content">
@@ -108,6 +116,18 @@ function handleLogout() {
 .enterprise-workspace__breadcrumb :deep(.el-breadcrumb__item:last-child .el-breadcrumb__inner) {
   color: #344054;
   font-weight: 600;
+}
+
+.enterprise-workspace__doc-link {
+  margin-left: auto;
+  color: #165dff;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.enterprise-workspace__doc-link:hover {
+  text-decoration: underline;
 }
 
 .layout-content {
