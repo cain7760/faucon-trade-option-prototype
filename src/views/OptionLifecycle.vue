@@ -527,6 +527,8 @@
       <section class="option-lifecycle-detail-section" aria-label="客户实际现金流">
         <div class="option-lifecycle-detail-section__heading">
           <h2>客户实际现金流</h2>
+        </div>
+        <div class="option-lifecycle-cashflow-filters">
           <el-select
             v-model="cashFlowTypes"
             clearable
@@ -552,10 +554,8 @@
             value-format="YYYY-MM-DD"
             style="width: 210px; flex: 0 0 auto"
           />
-          <el-button type="primary" size="small" :icon="Search" @click="applyCashFlowFilters"
-            >查询</el-button
-          >
-          <el-button size="small" :icon="RefreshLeft" @click="resetCashFlowFilters">重置</el-button>
+          <el-button type="primary" :icon="Search" @click="applyCashFlowFilters">查询</el-button>
+          <el-button :icon="RefreshLeft" @click="resetCashFlowFilters">重置</el-button>
         </div>
         <el-table
           :data="filteredActualCashFlows"
@@ -584,7 +584,11 @@
       append-to-body
     >
       <template #header>
-        <h2 class="option-lifecycle-split-drawer__title">交易现金流详情</h2>
+        <h2 class="option-lifecycle-split-drawer__title">
+          交易现金流详情<span class="option-lifecycle-split-drawer__title-note"
+            >（详细字段以簿记详情为准）</span
+          >
+        </h2>
       </template>
 
       <div class="option-lifecycle-split-drawer__workspace">
@@ -2320,6 +2324,12 @@ function exportRows() {
   line-height: 28px;
 }
 
+.option-lifecycle-split-drawer__title-note {
+  color: #86909c;
+  font-size: 13px;
+  font-weight: 400;
+}
+
 .option-lifecycle-split-drawer__workspace {
   display: flex;
   min-height: 0;
@@ -2431,6 +2441,13 @@ function exportRows() {
   margin-bottom: 12px;
 }
 
+.option-lifecycle-cashflow-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
 .option-lifecycle-detail-section__heading h2 {
   margin-bottom: 0;
 }
@@ -2448,6 +2465,11 @@ function exportRows() {
 .option-lifecycle-descriptions :deep(.el-descriptions__content) {
   color: #1d2129;
   font-size: 13px;
+}
+
+.option-lifecycle-split-drawer .option-lifecycle-descriptions :deep(.el-descriptions__table) {
+  width: 100%;
+  table-layout: fixed;
 }
 
 .option-lifecycle-detail-table {
