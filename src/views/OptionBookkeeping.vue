@@ -232,6 +232,14 @@
                 />
               </label>
               <label>
+                <span>背靠背合约编号</span>
+                <el-input
+                  v-model="historyDraftFilters.backToBackContract"
+                  clearable
+                  placeholder="请输入"
+                />
+              </label>
+              <label>
                 <span>变更类型</span>
                 <el-select v-model="historyDraftFilters.changeType" clearable placeholder="请选择">
                   <el-option label="更新" value="update" />
@@ -439,9 +447,10 @@
               <div v-if="historyChangeGroups.length" class="option-bookkeeping-pagination">
                 <el-pagination
                   v-model:current-page="historyCurrentPage"
-                  :page-size="historyPageSize"
+                  v-model:page-size="historyPageSize"
+                  :page-sizes="[50, 100, 200]"
                   :total="historyChangeGroups.length"
-                  layout="total, prev, pager, next"
+                  layout="total, sizes, prev, pager, next"
                 />
               </div>
             </section>
@@ -790,6 +799,7 @@ interface FilterForm {
 
 interface HistoryFilterForm {
   transactionNo: string
+  backToBackContract: string
   changeType: HistoryChangeType | ''
   accountType: string
   modifiedAtRange: [string, string] | []
@@ -1747,7 +1757,7 @@ const historyAppliedFilters = reactive<HistoryFilterForm>(createHistoryFilterFor
 const exceptionCurrentPage = ref(1)
 const exceptionPageSize = 100
 const historyCurrentPage = ref(1)
-const historyPageSize = 100
+const historyPageSize = ref(100)
 const activeSummaryExceptionType = ref<ExceptionType | ''>('')
 const maintenanceRecord = ref<BookkeepingException | null>(null)
 const historicalModificationRecord = ref<BookkeepingException | null>(null)
@@ -1810,6 +1820,7 @@ const historyChangeGroups = computed<HistoryChangeGroup[]>(() => {
     .filter(
       (item) =>
         includesText(item.transactionNo, historyAppliedFilters.transactionNo) &&
+        includesText(item.backToBackContract, historyAppliedFilters.backToBackContract) &&
         (!historyAppliedFilters.changeType ||
           item.changeType === historyAppliedFilters.changeType) &&
         (!historyAppliedFilters.accountType ||
@@ -1844,8 +1855,8 @@ const historyChangeGroups = computed<HistoryChangeGroup[]>(() => {
   })
 })
 const pagedHistoryChangeGroups = computed(() => {
-  const start = (historyCurrentPage.value - 1) * historyPageSize
-  return historyChangeGroups.value.slice(start, start + historyPageSize)
+  const start = (historyCurrentPage.value - 1) * historyPageSize.value
+  return historyChangeGroups.value.slice(start, start + historyPageSize.value)
 })
 
 const exceptionStats = computed(() => summarizeExceptions(filteredExceptions.value))
@@ -2113,7 +2124,13 @@ function createFilterForm(): FilterForm {
 }
 
 function createHistoryFilterForm(): HistoryFilterForm {
-  return { transactionNo: '', changeType: '', accountType: '', modifiedAtRange: [] }
+  return {
+    transactionNo: '',
+    backToBackContract: '',
+    changeType: '',
+    accountType: '',
+    modifiedAtRange: [],
+  }
 }
 
 function includesText(value: string, keyword: string) {
