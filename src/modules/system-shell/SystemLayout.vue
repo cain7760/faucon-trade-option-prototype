@@ -19,6 +19,7 @@
             <el-breadcrumb-item>{{ currentTitle }}</el-breadcrumb-item>
           </el-breadcrumb>
           <a
+            v-if="route.path.startsWith('/option-lifecycle')"
             class="enterprise-workspace__doc-link"
             href="https://my.feishu.cn/wiki/WPNdwvozQii4TtkdlNBcAJ6anef?from=from_copylink"
             target="_blank"

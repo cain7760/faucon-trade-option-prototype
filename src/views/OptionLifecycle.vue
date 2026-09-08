@@ -308,12 +308,31 @@
             :fixed="column.fixed"
             :align="column.align"
             :header-align="column.headerAlign"
-            :label-class-name="column.wrapHeader ? 'option-lifecycle-header--wrap' : undefined"
+            :label-class-name="column.wrapHeader ? 'option-lifecycle-header--wrap' : column.noHeaderEllipsis ? 'option-lifecycle-header--full' : undefined"
             :show-overflow-tooltip="column.showOverflowTooltip"
             :sortable="column.sortable ? 'custom' : false"
           >
-            <template v-if="column.kind === 'strikeRate'" #header>
+            <template v-if="column.headerLines" #header>
+              <span class="option-lifecycle-header-lines">{{ column.headerLines[0] }}<br />{{ column.headerLines[1] }}</span>
+            </template>
+            <template v-else-if="column.kind === 'strikeRate'" #header>
               <span class="option-lifecycle-strike-header">执行价<span>(%)</span></span>
+            </template>
+            <template v-if="column.value === 'contractNo'" #default="{ row }">
+              <div class="option-lifecycle-contract-cell">
+                <el-tooltip :content="row.contractNo" placement="top">
+                  <span class="option-lifecycle-contract-cell__text">{{ row.contractNo }}</span>
+                </el-tooltip>
+                <el-tooltip content="复制背靠背合约编号" placement="top">
+                  <el-button
+                    link
+                    class="option-lifecycle-contract-cell__copy"
+                    :icon="CopyDocument"
+                    aria-label="复制背靠背合约编号"
+                    @click.stop="copyContractNo(row.contractNo)"
+                  />
+                </el-tooltip>
+              </div>
             </template>
             <template v-if="column.kind === 'status'" #default="{ row }">
               <el-tag :type="row.status === '存续' ? 'success' : 'info'" effect="light">{{
@@ -641,7 +660,7 @@
 import JSZip from 'jszip'
 import { computed, reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Download, MoreFilled, Operation, RefreshLeft, Search } from '@element-plus/icons-vue'
+import { CopyDocument, Download, MoreFilled, Operation, RefreshLeft, Search } from '@element-plus/icons-vue'
 
 type LifecycleStatus = '存续' | '了结'
 type ViewMode = 'complete' | 'simple'
@@ -721,6 +740,8 @@ interface ColumnOption {
   fixed?: true | 'left' | 'right'
   showOverflowTooltip?: boolean
   wrapHeader?: boolean
+  noHeaderEllipsis?: boolean
+  headerLines?: [string, string]
   sortable?: boolean
   kind?: 'optionInfo' | 'strikeRate' | 'status'
 }
@@ -824,18 +845,24 @@ const simpleColumnGroups: ColumnGroup[] = [
   {
     label: '',
     options: [
-      { value: 'eventNo', label: '事件编号', width: 150, fixed: 'left', showOverflowTooltip: true },
+      { value: 'eventNo', label: '事件编号', width: 100, fixed: 'left', showOverflowTooltip: true },
       {
         value: 'contractNo',
         label: '背靠背合约编号',
-        width: 230,
+        width: 153,
         fixed: 'left',
-        showOverflowTooltip: true,
       },
       { value: 'counterparty', label: '交易对手', width: 130, fixed: 'left', showOverflowTooltip: true },
       { value: 'underlying', label: '标的', width: 168, showOverflowTooltip: true },
       { value: 'openDate', label: '开仓日期', width: 108 },
-      { value: 'customerOpenPrice', label: '客户开仓价', width: 106, align: 'right', sortable: true },
+      {
+        value: 'customerOpenPrice',
+        label: '客户开仓价',
+        width: 106,
+        align: 'right',
+        noHeaderEllipsis: true,
+        sortable: true,
+      },
       {
         value: 'strikeRate',
         label: '执行价',
@@ -843,6 +870,7 @@ const simpleColumnGroups: ColumnGroup[] = [
         align: 'right',
         headerAlign: 'right',
         kind: 'strikeRate',
+        noHeaderEllipsis: true,
         sortable: true,
       },
       {
@@ -850,7 +878,9 @@ const simpleColumnGroups: ColumnGroup[] = [
         label: '客户期初名义本金',
         width: 146,
         align: 'right',
+        headerAlign: 'right',
         wrapHeader: true,
+        headerLines: ['客户期初', '名义本金'],
         sortable: true,
       },
       {
@@ -858,7 +888,6 @@ const simpleColumnGroups: ColumnGroup[] = [
         label: '上手期初名义本金',
         width: 146,
         align: 'right',
-        wrapHeader: true,
         sortable: true,
       },
       { value: 'hedgerCount', label: '上手方数量', width: 100, align: 'right', sortable: true },
@@ -870,7 +899,9 @@ const simpleColumnGroups: ColumnGroup[] = [
         label: '客户期权结算金额',
         width: 148,
         align: 'right',
+        headerAlign: 'right',
         wrapHeader: true,
+        headerLines: ['客户期权', '结算金额'],
         sortable: true,
       },
       {
@@ -878,7 +909,9 @@ const simpleColumnGroups: ColumnGroup[] = [
         label: '上手期权结算金额',
         width: 148,
         align: 'right',
+        headerAlign: 'right',
         wrapHeader: true,
+        headerLines: ['上手期权', '结算金额'],
         sortable: true,
       },
     ],
@@ -1862,6 +1895,26 @@ function openDetail(row: LifecycleRow) {
   detailVisible.value = true
 }
 
+async function copyContractNo(contractNo: string) {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(contractNo)
+    } else {
+      const input = document.createElement('textarea')
+      input.value = contractNo
+      input.style.position = 'fixed'
+      input.style.opacity = '0'
+      document.body.appendChild(input)
+      input.select()
+      document.execCommand('copy')
+      input.remove()
+    }
+    ElMessage.success('背靠背合约编号已复制')
+  } catch {
+    ElMessage.error('复制失败，请重试')
+  }
+}
+
 function openSplitDetail(row: TransactionCashFlow) {
   selectedTransactionCashFlow.value = row
   splitAccountTab.value = splitRows[0].accountType
@@ -2256,6 +2309,29 @@ function exportRows() {
   -webkit-line-clamp: 2;
 }
 
+.option-lifecycle-contract-cell {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.option-lifecycle-contract-cell__text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.option-lifecycle-contract-cell__copy {
+  width: 16px;
+  min-width: 16px;
+  height: 20px;
+  margin: 0 !important;
+  padding: 0;
+  font-size: 14px;
+}
+
 .option-lifecycle-strike-header {
   display: inline-flex;
   width: 100%;
@@ -2277,6 +2353,17 @@ function exportRows() {
   word-break: break-all;
   overflow: visible;
   text-overflow: clip;
+}
+
+.option-lifecycle-table--simple :deep(th.option-lifecycle-header--full .cell) {
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.option-lifecycle-header-lines {
+  display: inline-block;
+  line-height: 16px;
+  white-space: nowrap;
 }
 
 .option-lifecycle-table :deep(.el-button.is-link),
