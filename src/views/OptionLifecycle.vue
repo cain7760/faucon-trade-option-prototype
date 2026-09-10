@@ -312,7 +312,24 @@
             :show-overflow-tooltip="column.showOverflowTooltip"
             :sortable="column.sortable ? 'custom' : false"
           >
-            <template v-if="column.headerLines" #header>
+            <template v-if="column.sortable" #header>
+              <span class="option-lifecycle-sort-header">
+                <span v-if="column.headerLines" class="option-lifecycle-header-lines"
+                  >{{ column.headerLines[0] }}<br />{{ column.headerLines[1] }}</span
+                >
+                <span v-else-if="column.kind === 'strikeRate'" class="option-lifecycle-strike-header"
+                  >执行价<span>(%)</span></span
+                >
+                <span v-else>{{ column.tableLabel || column.label }}</span>
+                <el-icon
+                  class="option-lifecycle-sort-header__icon"
+                  :class="{ 'is-active': simpleSortState.prop === column.value }"
+                >
+                  <component :is="sortIcon(column.value)" />
+                </el-icon>
+              </span>
+            </template>
+            <template v-else-if="column.headerLines" #header>
               <span class="option-lifecycle-header-lines">{{ column.headerLines[0] }}<br />{{ column.headerLines[1] }}</span>
             </template>
             <template v-else-if="column.kind === 'strikeRate'" #header>
@@ -660,7 +677,17 @@
 import JSZip from 'jszip'
 import { computed, reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
-import { CopyDocument, Download, MoreFilled, Operation, RefreshLeft, Search } from '@element-plus/icons-vue'
+import {
+  CopyDocument,
+  Download,
+  MoreFilled,
+  Operation,
+  RefreshLeft,
+  Search,
+  Sort,
+  SortDown,
+  SortUp,
+} from '@element-plus/icons-vue'
 
 type LifecycleStatus = '存续' | '了结'
 type ViewMode = 'complete' | 'simple'
@@ -1712,6 +1739,11 @@ function handleSimpleSortChange(event: {
   currentPage.value = 1
 }
 
+function sortIcon(column: string) {
+  if (simpleSortState.value.prop !== column || !simpleSortState.value.order) return Sort
+  return simpleSortState.value.order === 'ascending' ? SortUp : SortDown
+}
+
 function isSortPlaceholder(value: unknown): boolean {
   return value === '—' || value === '' || value === null || value === undefined
 }
@@ -2341,6 +2373,30 @@ function exportRows() {
   white-space: normal;
 }
 
+.option-lifecycle-sort-header {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.option-lifecycle-sort-header .option-lifecycle-strike-header {
+  width: auto;
+  flex: 0 0 auto;
+}
+
+.option-lifecycle-sort-header__icon {
+  flex: 0 0 auto;
+  color: #86909c;
+  font-size: 13px;
+}
+
+.option-lifecycle-sort-header__icon.is-active {
+  color: #165dff;
+}
+
 .option-lifecycle-table :deep(th .cell),
 :global(.option-lifecycle-drawer .el-table th .cell),
 :global(.el-dialog .option-lifecycle-detail-table th .cell) {
@@ -2358,6 +2414,10 @@ function exportRows() {
 .option-lifecycle-table--simple :deep(th.option-lifecycle-header--full .cell) {
   overflow: visible;
   text-overflow: clip;
+}
+
+.option-lifecycle-table--simple :deep(th.is-sortable .caret-wrapper) {
+  display: none;
 }
 
 .option-lifecycle-header-lines {
